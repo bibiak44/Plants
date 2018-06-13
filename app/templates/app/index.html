@@ -1,0 +1,67 @@
+{% extends "app/layout.html" %}
+{% block content %}
+
+
+<div class="jumbotron">
+    <h1>Trvalky</h1>
+    <p class="lead">Applikacia zobrazuje tabulku kvitnutia podla kriterii rastlin.</p>
+    <p><a href="https://www.djangoproject.com/" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+</div>
+
+<div class="row">
+    <div class="col-md-2">
+        <h2>Kriteria vyberu</h2>
+        <form method='post' novalidate>
+            {% csrf_token %}
+            {% for pole in form %}
+                <div class='form-group'>
+                    {{ pole.label_tag }}
+                    <br>
+                    {{ pole }}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Vyber</button>
+        </form>
+    </div>
+
+    <div class="col-md-10">
+        <h2>Vyber rastlin</h2>
+        {% if plant %}
+            <table class="table  table-hover table-striped" style="width:100%">
+                <th>Vyber</th>
+                <th>Rod latinsky</th>
+                <th>Druh latinsky</th>
+                <th>Kultivar</th>
+                <th>Farba kvetu</th>
+                <th>Typ</th>
+                <th>Vyska</th>
+                <th>Pouzitie</th>
+                <th>Kvitne od</th>
+                <th>Kvitne do</th>
+                <th>Poziadavky na slnko</th>
+                <th>Poziadavky na vlahu</th>
+                {% for p in plant %}
+                <tr>
+                    <td><input type="checkbox" id="pk" name="pk" value = {{ p.pk }} /></td>
+                    <td>{{ p.rod_lat }}</td>
+                    <td>{{ p.druh_lat }}</td>
+                    <td>{{ p.kultivar }}</td>
+                    <td>{{ p.farba }}</td>
+                    <td>{{ p.typ }}</td>
+                    <td>{{ p.vyska }}</td>
+                    <td>{{ p.pouzitie }}</td>
+                    <td>{{ p.kvitnutie_od }}</td>
+                    <td>{{ p.kvitnutie_do }}</td>
+                    <td>{{ p.slnko }}</td>
+                    <td>{{ p.vlaha }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>Nie je vybrany ziadny parameter.</p>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}
