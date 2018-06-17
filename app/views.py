@@ -66,8 +66,6 @@ def home(request):
                         'zoznam':zoznam,
                         'range':range(1, 13),
                         'months':months,
-                        'kwak':kwak,
-                        'daco':daco,
                     }
                 )
             else:
@@ -81,7 +79,7 @@ def home(request):
                     }
                 )
     else:
-        plants = Plant1.objects.all()
+        plants = Plant1.objects.all().order_by('rod_lat')
         return render(
             request,
             'app/index.html',
