@@ -1,64 +1,100 @@
 {% extends "app/layout.html" %}
 {% block content %}
 
-
-<div class="jumbotron">
-    <h1>Trvalky</h1>
-    <p class="lead">Applikacia zobrazuje tabulku kvitnutia podla kriterii rastlin.</p>
-    <p><a href="https://www.djangoproject.com/" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
-</div>
-
 <div class="row">
-    <div class="col-md-2">
-        <h2>Kriteria vyberu</h2>
+    <div class="col-md-12">
+        <h2>Kritéria</h2>
         <form method='post' novalidate>
             {% csrf_token %}
-            {% for pole in form %}
+            <div class="form-inline">
                 <div class='form-group'>
-                    {{ pole.label_tag }}
-                    <br>
-                    {{ pole }}
+                    {% for pole in form %}
+                        <p style='text-align: left;'class="mb-3 mr-sm-5">{{ pole.label_tag }} {{ pole }}</p>
+                    {% endfor %}
+                    <button type="submit" name="vyber" class="btn btn-primary">Výber</button>
                 </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-primary">Vyber</button>
+            </div>
         </form>
-    </div>
 
-    <div class="col-md-10">
-        <h2>Vyber rastlin</h2>
-        {% if plant %}
-            <table class="table  table-hover table-striped" style="width:100%">
-                <th>Vyber</th>
-                <th>Rod latinsky</th>
-                <th>Druh latinsky</th>
-                <th>Kultivar</th>
-                <th>Farba kvetu</th>
-                <th>Typ</th>
-                <th>Vyska</th>
-                <th>Pouzitie</th>
-                <th>Kvitne od</th>
-                <th>Kvitne do</th>
-                <th>Poziadavky na slnko</th>
-                <th>Poziadavky na vlahu</th>
-                {% for p in plant %}
-                <tr>
-                    <td><input type="checkbox" id="pk" name="pk" value = {{ p.pk }} /></td>
-                    <td>{{ p.rod_lat }}</td>
-                    <td>{{ p.druh_lat }}</td>
-                    <td>{{ p.kultivar }}</td>
-                    <td>{{ p.farba }}</td>
-                    <td>{{ p.typ }}</td>
-                    <td>{{ p.vyska }}</td>
-                    <td>{{ p.pouzitie }}</td>
-                    <td>{{ p.kvitnutie_od }}</td>
-                    <td>{{ p.kvitnutie_do }}</td>
-                    <td>{{ p.slnko }}</td>
-                    <td>{{ p.vlaha }}</td>
-                </tr>
-                {% endfor %}
-            </table>
+        <h2>Výber rastlín</h2>
+        {% if plants %}
+            <form method='post' novalidate>
+            {% csrf_token %}
+                <table class="table  table-hover table-striped table-sm" style="width:100%">
+                    <th>Výber</th>
+                    <th>Rod latinský</th>
+                    <th>Druh latinský</th>
+                    <th>Kultivar</th>
+                    <th>Farba kvetu</th>
+                    <th>Typ</th>
+                    <th>Výška [m]</th>
+                    <th>Použitie</th>
+                    <th>Kvitne od</th>
+                    <th>Kvitne do</th>
+                    <th>Požiadavky na slnko</th>
+                    <th>Požiadavky na vlahu</th>
+                    {% for plant in plants %}
+                    <tr>
+                        <td><input type="checkbox" id="pk" name="pk" value = {{ plant.pk }} /></td>
+                        <td>{{ plant.rod_lat }}</td>
+                        <td>{{ plant.druh_lat }}</td>
+                        <td>{{ plant.kultivar }}</td>
+                        <td>{% if plant.farba == 'modra' %}
+                                    <i class="fas fa-certificate" style="font-size:24px;color:blue;"></i>
+                                {% elif plant.farba == 'cervena' %}
+                                    <i class="fas fa-certificate" style="font-size:24px;color:red;"></i>
+                                {% elif plant.farba == 'fialova' %}
+                                    <i class="fas fa-certificate" style="font-size:24px;color:violet;"></i>
+                                {% elif plant.farba == 'hneda' %}
+                                    <i class="fas fa-certificate" style="font-size:24px;color:brown;"></i>
+                                {% elif plant.farba == 'ruzova' %}
+                                    <i class="fas fa-certificate" style="font-size:24px;color:pink;"></i>
+                                {% elif plant.farba == 'zelena' %}
+                                    <i class="fas fa-certificate" style="font-size:24px;color:green;"></i>
+                                {% elif plant.farba == 'zlta' %}
+                                    <i class="fas fa-certificate" style="font-size:24px;color:yellow;"></i>
+                                {% else %}
+                                N/A
+                                {% endif %}
+                                </td>
+                        <td>{{ plant.typ }}</td>
+                        <td>{{ plant.vyska }}</td>
+                        <td>{{ plant.pouzitie }}</td>
+                        <td>{% if plant.kvitnutie_od == 1 %}Jan
+                            {% elif plant.kvitnutie_od == 2 %}Feb
+                            {% elif plant.kvitnutie_od == 3 %}Mar
+                            {% elif plant.kvitnutie_od == 4 %}Apr
+                            {% elif plant.kvitnutie_od == 5 %}May
+                            {% elif plant.kvitnutie_od == 6 %}Jun
+                            {% elif plant.kvitnutie_od == 7 %}Jul
+                            {% elif plant.kvitnutie_od == 8 %}Aug
+                            {% elif plant.kvitnutie_od == 9 %}Sep
+                            {% elif plant.kvitnutie_od == 10 %}Okt
+                            {% elif plant.kvitnutie_od == 11 %}Nov
+                            {% elif plant.kvitnutie_od == 12 %}Dec
+                            {% else %}N/a{% endif %}</td>
+                        <td>{% if plant.kvitnutie_do == 1 %}Jan
+                            {% elif plant.kvitnutie_do == 2 %}Feb
+                            {% elif plant.kvitnutie_do == 3 %}Mar
+                            {% elif plant.kvitnutie_do == 4 %}Apr
+                            {% elif plant.kvitnutie_do == 5 %}May
+                            {% elif plant.kvitnutie_do == 6 %}Jun
+                            {% elif plant.kvitnutie_do == 7 %}Jul
+                            {% elif plant.kvitnutie_do == 8 %}Aug
+                            {% elif plant.kvitnutie_do == 9 %}Sep
+                            {% elif plant.kvitnutie_do == 10 %}Okt
+                            {% elif plant.kvitnutie_do == 11 %}Nov
+                            {% elif plant.kvitnutie_do == 12 %}Dec
+                            {% else %}N/a{% endif %}</td>
+                        <td>{{ plant.slnko }}</td>
+                        <td>{{ plant.vlaha }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <button type="submit" name="tabulka" class="btn btn-primary">Tabuľka</button>
+            </form>
         {% else %}
-            <p>Nie je vybrany ziadny parameter.</p>
+            <p>Nie je vybraný žiadny parameter.</p>
         {% endif %}
     </div>
 </div>

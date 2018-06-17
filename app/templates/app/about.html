@@ -1,10 +1,68 @@
-{% extends "app/layout.html" %}
+{% extends "app/layout_tab.html" %}
 
 {% block content %}
 
-<h2>{{ title }}.</h2>
-<h3>{{ message }}</h3>
+<div class="col-md-12">
+        {% if zoznam %}
+            <form method='post' novalidate>
+            {% csrf_token %}
+                <br>
+                <table class="table  table-hover table-striped table-sm" style="width:100%">
+                    <th>Rod latinský</th>
+                    <th>Druh latinský</th>
+                    <th>Kultivar</th>
+                    <th>Typ</th>
+                    <th>Výška [m]</th>
+                    <th>Použitie</th>
 
-<p>Use this area to provide additional information.</p>
+                    {% for i in months %}
+                        <th>{{ i }}</th>
+                    {% endfor %}
 
+                    <th>Požiadavky na slnko</th>
+                    <th>Požiadavky na vlahu</th>
+                    {% for plant in zoznam %}
+                    <tr>
+                        <td>{{ plant.rod_lat }}</td>
+                        <td>{{ plant.druh_lat }}</td>
+                        <td>{{ plant.kultivar }}</td>
+                        <td>{{ plant.typ }}</td>
+                        <td>{{ plant.vyska }}</td>
+                        <td>{{ plant.pouzitie }}</td>
+
+                        {% for i in range %}
+                            {% if i >= plant.kvitnutie_od and i <= plant.kvitnutie_do %}
+                                <td>{% if plant.farba == 'modra' %}
+                                    <i class="fas fa-certificate" style="font-size:24px;color:blue;"></i>
+                                {% elif plant.farba == 'cervena' %}
+                                    <i class="fas fa-certificate" style="font-size:24px;color:red;"></i>
+                                {% elif plant.farba == 'fialova' %}
+                                    <i class="fas fa-certificate" style="font-size:24px;color:violet;"></i>
+                                {% elif plant.farba == 'hneda' %}
+                                    <i class="fas fa-certificate" style="font-size:24px;color:brown;"></i>
+                                {% elif plant.farba == 'ruzova' %}
+                                    <i class="fas fa-certificate" style="font-size:24px;color:pink;"></i>
+                                {% elif plant.farba == 'zelena' %}
+                                    <i class="fas fa-certificate" style="font-size:24px;color:green;"></i>
+                                {% elif plant.farba == 'zlta' %}
+                                    <i class="fas fa-certificate" style="font-size:24px;color:yellow;"></i>
+                                {% else %}
+                                <i class="fas fa-certificate" style="font-size:24px;color:black;"></i>
+                                {% endif %}
+                                </td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                        {% endfor %}
+
+                        <td>{{ plant.slnko }}</td>
+                        <td>{{ plant.vlaha }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </form>
+        {% else %}
+            <p>Nie je vybraný žiadny parameter.</p>
+        {% endif %}
+    </div>
 {% endblock %}

@@ -5,7 +5,7 @@ Definition of views.
 from django.shortcuts import render
 from django.http import HttpRequest
 from django.template import RequestContext
-from datetime import datetime
+import datetime
 
 from app.models import Plant1
 from .forms import PlantForm
@@ -19,40 +19,77 @@ def home(request):
     kwargs = {}
 
     if request.method == 'POST':
-        if request.POST['farba']:
-            kwargs['farba'] = request.POST['farba']
-        if request.POST['typ']:
-            kwargs['typ'] = request.POST['typ']
-        if request.POST['pouzitie']:
-            kwargs['pouzitie'] = request.POST['pouzitie']
-        if request.POST['stanovisko']:
-            kwargs['stanovisko'] = request.POST['stanovisko']
-        if request.POST['slnko']:
-            kwargs['slnko'] = request.POST['slnko']
-        if request.POST['vlaha']:
-            kwargs['vlaha'] = request.POST['vlaha']
+        if 'vyber' in request.POST:
+            if request.POST['farba']:
+                kwargs['farba'] = request.POST['farba']
+            if request.POST['typ']:
+                kwargs['typ'] = request.POST['typ']
+            if request.POST['pouzitie']:
+                kwargs['pouzitie'] = request.POST['pouzitie']
+            if request.POST['stanovisko']:
+                kwargs['stanovisko'] = request.POST['stanovisko']
+            if request.POST['slnko']:
+                kwargs['slnko'] = request.POST['slnko']
+            if request.POST['vlaha']:
+                kwargs['vlaha'] = request.POST['vlaha']
 
-        planty = Plant1.objects.filter(**kwargs)
+            plants = Plant1.objects.filter(**kwargs)
 
-        return render(
-            request,
-            'app/index.html',
-            {
-                'title':'Home Page',
-                'year':datetime.now().year,
-                'form':form,
-                'plant':planty,
-            }
-        )
+            return render(
+                request,
+                'app/index.html',
+                {
+                    'title':'Home Page',
+                    'year':datetime.datetime.now().year,
+                    'form':form,
+                    'plants':plants,
+                }
+            )
+
+        elif 'tabulka' in request.POST:
+            if request.POST['pk']:
+
+                daco = request.POST
+                kwak = request.POST.getlist('pk')
+                zoznam = Plant1.objects.filter(id__in=request.POST.getlist('pk'))
+                months = []
+
+                for i in range(1,13):
+                    months.append(datetime.date(2018, i, 1).strftime('%b'))
+                return render(
+                    request,
+                    'app/about.html',
+                    {
+                        'title':'About',
+                        'message':'Your application description page.',
+                        'year':datetime.datetime.now().year,
+                        'zoznam':zoznam,
+                        'range':range(1, 13),
+                        'months':months,
+                        'kwak':kwak,
+                        'daco':daco,
+                    }
+                )
+            else:
+                return render(
+                    request,
+                    'app/about.html',
+                    {
+                        'title':'About',
+                        'message':'Your application description page.',
+                        'year':datetime.datetime.now().year,
+                    }
+                )
     else:
-        planty = Plant1.objects.none()
+        plants = Plant1.objects.all()
         return render(
             request,
             'app/index.html',
             {
                 'title':'Home Page',
-                'year':datetime.now().year,
+                'year':datetime.datetime.now().year,
                 'form':form,
+                'plants':plants
             }
         )
 
@@ -65,7 +102,7 @@ def contact(request):
         {
             'title':'Kontakt',
             'message':'Kontaktne udaje:',
-            'year':datetime.now().year,
+            'year':datetime.datetime.now().year,
         }
     )
 
@@ -76,9 +113,8 @@ def about(request):
         request,
         'app/about.html',
         {
-            'title':'About',
-            'message':'Your application description page.',
-            'year':datetime.now().year,
+            'nazov':'Tabulka kvitnutia',
+            'year':datetime.datetime.now().year,
         }
     )
 
